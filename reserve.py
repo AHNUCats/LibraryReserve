@@ -157,18 +157,12 @@ class Reserve:
 
             if self.day.get() == 2:
                 atData = str(datetime.date.today() + datetime.timedelta(days=1))
-                print(atData)
             elif self.day.get() == 1:
                 atData = str(datetime.date.today())
-                print(atData)
-            print(self.room.get())
-            sid = MAP.get(self.room.get())[0] + self.seat_entry.get()
-            print(sid)
 
+            sid = MAP.get(self.room.get())[0] + self.seat_entry.get()
             st = f'{self.start_hour.get()}:{self.start_minute.get()}'
-            print(st)
             et = f'{self.end_hour.get()}:{self.end_minute.get()}'
-            print(et)
 
             data = {
                 'atDate': atData,
@@ -222,7 +216,6 @@ class Reserve:
         }
 
         response = self.session.post(url=url, data=data)
-        # print(response.content.decode())
 
         if '请输入用户名' not in response.content.decode():
             self.logger.info('登录成功！')

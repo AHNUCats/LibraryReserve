@@ -59,33 +59,14 @@ class Reserve:
 
         frame = tk.Frame(self.root)
 
-        # 创建输入框
-        self.seat_entry = tk.Entry(frame)
+        self.seat_entry = None
+        self.create_entry('座位号:', self.seat_entry)
 
-        # 显示文字说明和输入框
-        tk.Label(frame, text="座位号").pack(side=tk.LEFT)
-        self.seat_entry.pack(side=tk.LEFT)
-        frame.pack()
+        self.account_entry = None
+        self.create_entry('学号:', self.account_entry)
 
-        frame = tk.Frame(self.root)
-
-        # 创建输入框
-        self.account_entry = tk.Entry(frame)
-
-        # 显示文字说明和输入框
-        tk.Label(frame, text="学号").pack(side=tk.LEFT)
-        self.account_entry.pack(side=tk.LEFT)
-        frame.pack()
-
-        frame = tk.Frame(self.root)
-
-        # 创建输入框
-        self.password_entry = tk.Entry(frame)
-
-        # 显示文字说明和输入框
-        tk.Label(frame, text="密码").pack(side=tk.LEFT)
-        self.password_entry.pack(side=tk.LEFT)
-        frame.pack()
+        self.password_entry = None
+        self.create_entry('密码:', self.password_entry)
 
         frame = tk.Frame(self.root)
 
@@ -102,43 +83,13 @@ class Reserve:
         self.day.set(2)
         frame.pack()
 
-        frame = tk.Frame(self.root)
+        self.start_hour = None
+        self.start_minute = None
+        self.create_time_selector('起始时间：', self.start_hour, self.start_minute)
 
-        # 创建小时选择器
-        self.start_hour = tk.StringVar()
-        self.start_hour.set("00")
-        hour_spinbox = tk.Spinbox(frame, from_=6, to=23, width=2, textvariable=self.start_hour)
-
-        # 创建分钟选择器
-        self.start_minute = tk.StringVar()
-        self.start_minute.set("00")
-        minute_spinbox = tk.Spinbox(frame, from_=0, to=59, width=2, textvariable=self.start_minute)
-
-        # 显示选择器
-        tk.Label(frame, text="起始时间：").pack(side=tk.LEFT)
-        hour_spinbox.pack(side=tk.LEFT)
-        tk.Label(frame, text=":").pack(side=tk.LEFT)
-        minute_spinbox.pack(side=tk.LEFT)
-        frame.pack()
-
-        frame = tk.Frame(self.root)
-
-        # 创建小时选择器
-        self.end_hour = tk.StringVar()
-        self.end_hour.set("00")
-        hour_spinbox = tk.Spinbox(frame, from_=6, to=23, width=2, textvariable=self.end_hour)
-
-        # 创建分钟选择器
-        self.end_minute = tk.StringVar()
-        self.end_minute.set("00")
-        minute_spinbox = tk.Spinbox(frame, from_=0, to=59, width=2, textvariable=self.end_minute)
-
-        # 显示选择器
-        tk.Label(frame, text="结束时间：").pack(side=tk.LEFT)
-        hour_spinbox.pack(side=tk.LEFT)
-        tk.Label(frame, text=":").pack(side=tk.LEFT)
-        minute_spinbox.pack(side=tk.LEFT)
-        frame.pack()
+        self.end_hour = None
+        self.end_minute = None
+        self.create_time_selector('结束时间：', self.end_hour, self.end_minute)
 
         self.button = tk.Button(self.root, text='预约', command=self.reserve)
         self.button.pack()
@@ -162,6 +113,29 @@ class Reserve:
 
         self.logger.addHandler(self.text_handler)
         self.logger.addHandler(self.file_handler)
+
+    def create_entry(self, label_text, entry_var):
+        frame = tk.Frame(self.root)
+        entry_var = tk.Entry(frame)
+        tk.Label(frame, text=label_text).pack(side=tk.LEFT)
+        entry_var.pack(side=tk.LEFT)
+        frame.pack()
+
+    def create_time_selector(self, label_text, hour_var, minute_var):
+        frame = tk.Frame(self.root)
+        hour_var = tk.StringVar()
+        hour_var.set("00")
+        hour_spinbox = tk.Spinbox(frame, from_=6, to=23, width=2, textvariable=hour_var)
+
+        minute_var = tk.StringVar()
+        minute_var.set("00")
+        minute_spinbox = tk.Spinbox(frame, from_=0, to=59, width=2, textvariable=minute_var)
+
+        tk.Label(frame, text=label_text).pack(side=tk.LEFT)
+        hour_spinbox.pack(side=tk.LEFT)
+        tk.Label(frame, text=":").pack(side=tk.LEFT)
+        minute_spinbox.pack(side=tk.LEFT)
+        frame.pack()
 
     def run(self):
         self.root.mainloop()
@@ -218,7 +192,7 @@ class Reserve:
                 elif '冲突' or '重复' in reserve.text:
                     sid = MAP.get(self.room.get())[0] + str(int(self.seat_entry.get()) + 1)
                     data['sid'] = sid
-                    time.sleep(random()+5)
+                    time.sleep(random() + 5)
                     self.logger.info(f'新的座位号：{sid}')
 
         except ValueError as ve:

@@ -40,6 +40,26 @@ class TextHandler(logging.Handler):
             messagebox.showwarning('警告', msg)
 
 
+class Logger:
+    def __init__(self, name, output):
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(logging.INFO)
+
+        self.text_handler = TextHandler(output)
+        self.text_handler.setLevel(logging.INFO)
+
+        self.file_handler = logging.FileHandler('my_log.log')
+        self.file_handler.setLevel(logging.INFO)
+
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%m-%d %H:%M:%S')
+
+        self.text_handler.setFormatter(formatter)
+        self.file_handler.setFormatter(formatter)
+
+        self.logger.addHandler(self.text_handler)
+        self.logger.addHandler(self.file_handler)
+
+
 class Reserve:
     def __init__(self, **kwargs):
         self.info = kwargs
@@ -97,22 +117,7 @@ class Reserve:
         self.text_widget = tk.Text(self.root)
         self.text_widget.pack()
 
-        self.logger = logging.getLogger('my_logger')
-        self.logger.setLevel(logging.INFO)
-
-        self.text_handler = TextHandler(self.text_widget)
-        self.text_handler.setLevel(logging.INFO)
-
-        self.file_handler = logging.FileHandler('my_log.log')
-        self.file_handler.setLevel(logging.INFO)
-
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%m-%d %H:%M:%S')
-
-        self.text_handler.setFormatter(formatter)
-        self.file_handler.setFormatter(formatter)
-
-        self.logger.addHandler(self.text_handler)
-        self.logger.addHandler(self.file_handler)
+        self.logger = Logger('reserve_logger', self.text_widget)
 
     def create_entry(self, label_text, entry_var):
         frame = tk.Frame(self.root)
